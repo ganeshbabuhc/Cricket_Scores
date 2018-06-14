@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *"
+    />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link href="css/material-icons.css" rel="stylesheet">
+    <title>Hello World</title>
+</head>
+
+<body>
+    <div class="container p-0 m-0" ng-app="CricApp" ng-controller="CricController">
+        <div class="">
+            <div class="card header-card">
+                <img class="card-img-top" src="img/intro1.jpg" alt="Card image cap">
+                <div class="intro-overlay"></div>
+                <div class="app-name">Example App</div>
+            </div>
+            <div class="live-matches-container scrollmenu">
+                <div class="row m-0">
+                    <div class="col-2 bg-white">
+                        <img width="43px" src="img/live.jpg">
+                    </div>
+                    <div class="col-10 text-danger bg-white p-0">
+                        <p class="match-status">Live Matches</p>
+                    </div>
+                </div>
+                <div class="card match-card col-6" ng-repeat="match in livematches.matches" data-toggle="modal" data-target="#matchmodal"
+                    ng-click="viewMatch(match)">
+                    <div class="card-body">
+                        <div class="row p-0 m-0" ng-repeat="team in match.participants">
+                            <div class="col-2 p-0 m-0">
+                                <img onerror="setTimeout(()=>{this.src='img/Flags_small/default.jpg'},1000)" src="img/Flags_small/{{_.replace(team.name, ' ', '_')}}.png">
+                            </div>
+                            <div class="col-8 p-0 m-0">
+                                <p class="card-title">{{team.name}}</div>
+                        </div>
+                        <p class="card-text">{{match.event_sub_status}}</p>
+                        <!--<a href="#" class="btn btn-primary">Go somewhere</a>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="modal fade modal-lg m-0 match-modal" id="matchmodal" role="dialog">
+                <div class="modal-dialog b-0">
+        
+                    <div class="modal-content">
+                        <div class="modal-header">
+                           
+                            <h4 class="modal-title">Modal Header</h4>
+                            <button type="button" class="close" data-dismiss="modal"><i class="material-icons md-light">arrow_back</i></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{selectedMatch}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+    </div>
+    <div class="app" style="display: none">
+        <h1>PhoneGaps</h1>
+        <div id="deviceready" class="blink">
+            <p class="event listening">Connecting to Device</p>
+            <p class="event received">Device is Ready</p>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/lodash.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+    <script>
+        var cric = angular.module("CricApp", []);
+        cric.controller("CricController", function ($scope, $http) {
+            console.log("Hello--controller")
+
+            $scope.livematches = {}; //= {"matches":[{"event_duration_left":"39.0","event_thisover":"0,0,1,1,0,w","event_is_daynight":"false","result_code":"W","participants":[{"name":"England","short_name":"ENG","id":"3","value":"363 (106.2)","players_involved":[],"highlight":"true"},{"name":"Pakistan","short_name":"PAK","id":"6","value":"174 (48.1) \u0026 134 (46.0)","firstup":"true","now":"true","players_involved":[]}],"event_livecoverage":"true","game_id":"enpk06012018184484","event_priority":"1","start_date":"2018-06-01T15:30+05:30","event_islinkable":"true","event_status_id":"114","venue_id":"65","venue_name":"Headingley, Leeds","event_name":"2nd Test","event_day":"3","end_date":"2018-06-03T20:56+05:30","series_name":"Pakistan in England, 2 Test Series, 2018","event_session":"2","tour_name":"Pakistan tour of England, 2018","tour_id":"787","sport":"cricket","series_id":"2845","event_sub_status":"England beat Pakistan by an innings and 55 runs","result_sub_code":"","league_code":"icc","event_state":"R","winning_margin":"an innings and 55 runs","venue_gmt_offset":"+01:00","event_format":"test","event_stage":"series","event_group":"","event_status":"Match Ended"},{"event_duration_left":"","event_thisover":"1,1,1,0,0,w","event_is_daynight":"true","result_code":"W","participants":[{"name":"Afghanistan","short_name":"AFG","id":"1188","value":"167/8 (20.0)","firstup":"true","players_involved":[],"highlight":"true"},{"name":"Bangladesh","short_name":"BAN","id":"2","value":"122 (19.0)","now":"true","players_involved":[]}],"event_livecoverage":"true","game_id":"afba06032018186781","event_priority":"1","start_date":"2018-06-03T20:00+05:30","event_islinkable":"true","event_status_id":"114","venue_id":"1935","venue_name":"Rajiv Gandhi International Cricket Stadium, Dehradun","event_name":"1st T20I","event_day":"","end_date":"2018-06-03T23:25+05:30","series_name":"Afghanistan and Bangladesh in India, 3 T20I Series, 2018","event_session":"","tour_name":"Afghanistan and Bangladesh tour of India, 2018","tour_id":"916","sport":"cricket","series_id":"3013","event_sub_status":"Afghanistan beat Bangladesh by 45 runs","result_sub_code":"","league_code":"icc","event_state":"R","winning_margin":"45 runs","venue_gmt_offset":"+05:30","event_format":"t20","event_stage":"series","event_group":"","event_status":"Match Ended"},{"event_duration_left":"","event_thisover":"4,6,0,4,6","event_is_daynight":"true","result_code":"W","participants":[{"name":"Afghanistan","short_name":"AFG","id":"1188","value":"135/4 (18.5)","now":"true","players_involved":[],"highlight":"true"},{"name":"Bangladesh","short_name":"BAN","id":"2","value":"134/8 (20.0)","firstup":"true","players_involved":[]}],"event_livecoverage":"true","game_id":"afba06052018186782","event_priority":"1","start_date":"2018-06-05T20:00+05:30","event_islinkable":"true","event_status_id":"114","venue_id":"1935","venue_name":"Rajiv Gandhi International Cricket Stadium, Dehradun","event_name":"2nd T20I","event_day":"","end_date":"2018-06-05T23:07+05:30","series_name":"Afghanistan and Bangladesh in India, 3 T20I Series, 2018","event_session":"","tour_name":"Afghanistan and Bangladesh tour of India, 2018","tour_id":"916","sport":"cricket","series_id":"3013","event_sub_status":"Afghanistan beat Bangladesh by 6 wickets","result_sub_code":"","league_code":"icc","event_state":"R","winning_margin":"6 wickets","venue_gmt_offset":"+05:30","event_format":"t20","event_stage":"series","event_group":"","event_status":"Match Ended"},{"event_duration_left":"6.0","event_thisover":"0,1,0,0,0,0","event_is_daynight":"false","result_code":"","participants":[{"name":"West Indies","short_name":"WI","id":"9","value":"246/6 (84.0)","firstup":"true","now":"true","players_involved":[],"highlight":"true"},{"name":"Sri Lanka","short_name":"SL","id":"8","value":"","players_involved":[]}],"event_livecoverage":"true","game_id":"wisl06062018185631","event_priority":"1","start_date":"2018-06-06T19:30+05:30","event_islinkable":"true","event_status_id":"120","venue_id":"127","venue_name":"Queen's Park Oval, Port of Spain, Trinidad","event_name":"1st Test","event_day":"1","end_date":"2018-06-11T02:30+05:30","series_name":"Sri Lanka in West Indies, 3 Test Series, 2018","event_session":"3","tour_name":"Sri Lanka tour of West Indies, 2018","tour_id":"836","sport":"cricket","series_id":"2923","event_sub_status":"West Indies elected to bat","result_sub_code":"","league_code":"icc","event_state":"L","winning_margin":"","venue_gmt_offset":"-04:00","event_format":"test","event_stage":"series","event_group":"","event_status":"Stumps"},{"series_name":"New Zealnd Women in Ireland, Only T20I, 2018","event_duration_left":"","event_session":"","tour_name":"New Zealand Women tour of Ireland, 2018","event_is_daynight":"true","tour_id":"887","series_id":"2974","sport":"cricket","result_code":"","event_sub_status":"","result_sub_code":"","participants":[{"id":"1125","name":"Ireland Women","short_name":"IREW"},{"id":"1129","name":"New Zealand Women","short_name":"NZW"}],"event_livecoverage":"false","event_priority":"","game_id":"irwnzw06062018186584","league_code":"icc","event_state":"U","event_islinkable":"false","start_date":"2018-06-06T16:30+05:30","event_status_id":"115","venue_id":"445","winning_margin":"","venue_gmt_offset":"+01:00","venue_name":"YMCA CC Ground, Dublin","event_name":"One-off T20I","event_stage":"series","event_format":"t20","event_day":"","event_group":"","event_status":"Match yet to begin","end_date":"2018-06-06T20:30+05:30"},{"series_name":"Afghanistan and Bangladesh in India, 3 T20I Series, 2018","event_duration_left":"","event_session":"","tour_name":"Afghanistan and Bangladesh tour of India, 2018","event_is_daynight":"true","tour_id":"916","series_id":"3013","sport":"cricket","result_code":"","event_sub_status":"","participants":[{"name":"Afghanistan","short_name":"AFG","id":"1188"},{"name":"Bangladesh","short_name":"BAN","id":"2"}],"result_sub_code":"","event_livecoverage":"true","event_priority":"","game_id":"afba06072018186783","event_islinkable":"true","event_state":"U","league_code":"icc","start_date":"2018-06-07T20:00+05:30","event_status_id":"115","venue_id":"1935","winning_margin":"","venue_gmt_offset":"+05:30","venue_name":"Rajiv Gandhi International Cricket Stadium, Dehradun","event_stage":"series","event_name":"3rd T20I","event_format":"t20","event_day":"","event_group":"","event_status":"Match yet to begin","end_date":"2018-06-08T00:00+05:30"},{"series_name":"New Zealnd Women in Ireland, 3 ODI Series, 2018","event_duration_left":"","event_session":"","tour_name":"New Zealand Women tour of Ireland, 2018","event_is_daynight":"false","tour_id":"887","series_id":"2975","sport":"cricket","result_code":"","event_sub_status":"","result_sub_code":"","participants":[{"id":"1125","name":"Ireland Women","short_name":"IREW"},{"id":"1129","name":"New Zealand Women","short_name":"NZW"}],"event_livecoverage":"false","event_priority":"","game_id":"irwnzw06082018186585","league_code":"icc","event_state":"U","event_islinkable":"false","start_date":"2018-06-08T15:00+05:30","event_status_id":"115","venue_id":"445","winning_margin":"","venue_gmt_offset":"+01:00","venue_name":"YMCA CC Ground, Dublin","event_name":"1st ODI","event_stage":"series","event_format":"odi","event_day":"","event_group":"","event_status":"Match yet to begin","end_date":"2018-06-08T23:00+05:30"}]};
+
+            $scope.getLiveMatches = function () {
+                $http.post("http://cricket.yahoo.net/sifeeds/multisport/?methodtype=3&client=24&sport=1&league=0&timezone=0530&language=en&gamestate=4")
+                    .then(function (response) {
+                        console.log(response)
+                        $scope.livematches = response.data;
+                    });
+            }
+            $scope.getLiveMatches();
+            console.log($scope.livematches);
+            $scope._ = _;
+            $scope.selectedMatch = {};
+            $scope.selectedMatchScore = {};
+            $scope.viewMatch = function (match) {
+                $scope.selectedMatch = match;
+                $scope.getMatchScore(match);
+            }
+            $scope.getMatchScore = function (match) {
+                let url = "https://cricket.yahoo.net/sifeeds/cricket/live/json/" + match.game_id + ".json";
+                $http.get(url).then(function (response) {
+                        console.log("match score", response);
+                        $scope.selectedMatchScore = response.data;
+                        localStorage.match = JSON.stringify(response.data);
+                        var ref = window.open("match.html", "_self", 'location=yes');
+                    });
+
+            }
+        });
+    </script>
+</body>
+
+</html>

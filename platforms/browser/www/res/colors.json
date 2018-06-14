@@ -1,0 +1,57 @@
+{
+    "IND":{
+        "img":"./img/host/IND.jpg",
+        "primary":"rgb(6, 101, 205)",
+        "secondary":"rgba(6, 101, 205,0.7)"
+    },
+    "WI":{
+        "img":"./img/host/WI.jpg",
+        "primary":"rgb(124, 26, 49)",
+        "secondary":"rgba(124, 26, 49, 0.7)"
+    },
+    "BAN":{
+        "img":"./img/host/BAN.jpg",
+        "primary":"rgb(10, 146, 94)",
+        "secondary":"rgba(10, 146, 94,0.7)"
+    },
+    "AFG":{
+        "img":"./img/host/AFG.jpg",
+        "primary":"rgb(2, 85, 195)",
+        "secondary":"rgba(2, 85, 195, 0.7)"
+    },
+    "SL":{
+        "img":"./img/host/SL.jpg",
+        "primary":"rgb(30, 69, 144)",
+        "secondary":"rgba(30, 69, 144,0.7)"
+    },
+    "SCO":{
+        "img":"./img/host/SCO.jpg",
+        "primary":"rgb(30, 42, 80)",
+        "secondary":"rgba(30, 42, 80,0.7)"
+    },
+    "ENG":{
+        "img":"./img/host/ENG.jpg",
+        "primary":"rgb(222, 52, 39)",
+        "secondary":"rgba(222, 52, 39,0.7)"
+    },
+    "NED":{
+        "img":"./img/host/NED.jpg",
+        "primary":"rgb(244, 99, 31)",
+        "secondary":"rgba(244, 99, 31,0.7)"
+    },
+    "IRE":{
+        "img":"./img/host/IRE.jpg",
+        "primary":"rgb(112, 189, 33)",
+        "secondary":"rgba(112, 189, 33,0.7)"
+    },
+    "AUS":{
+        "img":"./img/host/AUS.jpg",
+        "primary":"rgb(228, 192, 72)",
+        "secondary":"rgba(228, 192, 72,0.7)"
+    },"PAK":{
+        "img":"./img/host/PAK.jpg",
+        "primary":"rgb(5, 152, 112)",
+        "secondary":"rgba(5, 152, 112,0.7)"
+    }
+    
+}

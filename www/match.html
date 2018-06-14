@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *"
+    />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link href="css/material-icons.css" rel="stylesheet">
+    <title>Hello World</title>
+</head>
+
+<body>
+    <div class="container p-0 m-0" ng-app="MtchApp" ng-controller="MatchController">
+        <div class="row p-0 m-0">
+            <div class="col-12 match-header p-0 p-abs">
+                <img class="match-headre-img" src="{{colors[match.Teams[match.Matchdetail.Team_Home].Name_Short].img}}">
+                <div class="match-header-ol" style="background:{{colors[match.Teams[match.Matchdetail.Team_Home].Name_Short].secondary}}">
+                    <h5 class="match-header-title">{{match.Teams[match.Matchdetail.Team_Home].Name_Short}} | {{match.Teams[match.Matchdetail.Team_Away].Name_Short}}</h5>
+                    <p class="match-header-sub-title t-center">{{match.Matchdetail.Series.Tour_Name}}</p>
+                </div>
+            </div>
+            <div class="col-12 match-header" style="background:{{colors[match.Teams[match.Matchdetail.Team_Home].Name_Short].primary}}">
+                <div class="match-header-ol p-rel row p-0" style="background:{{colors[match.Teams[match.Matchdetail.Team_Home].Name_Short].primary}}">
+                    <div class="col-6 t-start">
+                        <span class="match-header-sub-title">{{match.Matchdetail.Match.Number}}</span>
+                    </div>
+                    <div class="col-6 t-end">
+                        <span class="match-header-sub-title">Toss: {{match.Teams[match.Matchdetail.Tosswonby].Name_Full}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 match-header" ng-if="match.Matchdetail.Match.Type === 'Test'" style="background: white;">
+                <div class="match-header-ol p-rel row p-0 bg-white">
+                    <div class="col-6 t-start">
+                        <span class="match-header-sub-title text-black">Day: {{match.Matchdetail.Day}}, Session :{{match.Matchdetail.Session}}</span>
+                    </div>
+                    <div class="col-6 t-end">
+                        <span class="match-header-sub-title text-black"> {{match.Matchdetail.Status}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 match-header" ng-if="match.Matchdetail.Status === 'Match Ended'" style="background: white;">
+                <h5 class="inn-card-sheader " style="background: white; text-align: center;">{{match.Matchdetail.Result}}</h5>
+            </div>
+            <div class="col-12 match-not-started" ng-if="match.Matchdetail.Status === 'Match yet to begin'" style="background: white;">
+                <table style="text-align: center;vertical-align: center;width:100%;height: 100%;">
+                    <tr>
+                        <td>
+                            <img style="width: 59px;" src="./img/loader.svg">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5 class="inn-card-sheader " style="background: white; text-align: center;">Match not yet started</h5>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-12 p-0 inn-card" ng-repeat="inn in match.Innings">
+                <h5 data-toggle="collapse" class="p-1 in-header mb-0" style="background: {{colors[match.Teams[inn.Battingteam].Name_Short].primary}}"
+                    data-target="#{{inn.Number}}">{{match.Teams[inn.Battingteam].Name_Short}} {{inn.Total}}/{{inn.Wickets}} ({{inn.Overs}})
+                    <i class="material-icons md-light pull-right collapse-inn-icon md-18">expand_less</i>
+                    <span style="float: right"> {{inn.Number}} Innings </span>
+                </h5>
+                <div id="{{inn.Number}}" class="collapse show p-1">
+                    <h5 class="inn-card-sheader ">Batting</h5>
+                    <table class="score-table">
+                        <thead>
+                            <tr>
+                                <th>Batsman</th>
+                                <th>Runs</th>
+                                <th>Balls</th>
+                                <th class="fours">4's</th>
+                                <th class="sixes">6's</th>
+                                <th>SR</th>
+                            </tr>
+                        </thead>
+                        <tbody class="p-1">
+                            <tr ng-repeat="batsman in inn.Batsmen" class="batsman-row" ng-if="batsman.Dismissal || batsman.Isbatting">
+                                <td class="batsman-name">
+                                    <a ng-click="getProfile(batsman.Batsman,colors[match.Teams[inn.Battingteam].Name_Short])" class="batsman-prof-link {{(batsman.Howout ==='Batting' && batsman.Isbatting || batsman.Dismissal ==='not out')?'notout':'out'}}">{{match.Teams[inn.Battingteam].Players[batsman.Batsman].Name_Full}}</a>
+                                    <p class="p-0 m-0 howout">{{batsman.Howout}}</p>
+                                </td>
+
+                                <!-- {{match.Teams[inn.BattingTeam].Players[batsman.Batsman]}} -->
+                                <td>{{batsman.Runs}}</td>
+                                <td>{{batsman.Balls}}</td>
+                                <td>{{batsman.Fours}}</td>
+                                <td>{{batsman.Sixes}}</td>
+                                <td>{{batsman.Strikerate}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 class="inn-card-sheader ">Partnership: {{inn.Partnership_Current.Runs}}({{inn.Partnership_Current.Balls}})</h5>
+                    <h5 class="inn-card-sheader ">Last 12 Balls</h5>
+                    <div class="col-12">
+                        <span class="not-out-batsman" ng-repeat="batsman in [0,1,2,3,4,'Wd+1',6]" ng-if="!batsman.Dismissal && !batsman.Isbatting">{{batsman}}</span>
+                        <span>
+                            <img src="img/bounce.svg" style="width: 21px">
+                        </span>
+                    </div>
+                    <h5 class="inn-card-sheader ">Next to Bat</h5>
+                    <div class="col-12">
+                        <span class="not-out-batsman" ng-repeat="batsman in inn.Batsmen" ng-if="!batsman.Dismissal && !batsman.Isbatting">{{match.Teams[inn.Battingteam].Players[batsman.Batsman].Name_Full}}</span>
+                    </div>
+                    <h5 class="inn-card-sheader ">Fall of wickets</h5>
+                    <div class="col-12">
+                        <span class="not-out-batsman" ng-repeat="fow in inn.FallofWickets">{{$index+1}}. {{fow.Score}}({{fow.Overs}})</span>
+                    </div>
+                    <h5 class="inn-card-sheader ">Bowlig</h5>
+                    <table class="score-table">
+                        <thead>
+                            <tr>
+                                <th>Bowler</th>
+                                <th>Overs</th>
+                                <th>Runs</th>
+                                <th>Maiden</th>
+                                <th>Dots</th>
+                                <th class="sixes">E.rate</th>
+                            </tr>
+                        </thead>
+                        <tbody class="p-1">
+                            <tr ng-repeat="bowler in inn.Bowlers" class="batsman-row">
+                                <td class="batsman-name">
+                                    <a ng-click="getProfile(bowler.Bowler,colors[match.Teams[getBowlingTeamId(inn.Battingteam)].Name_Short])" class="batsman-prof-link {{bowler.Isbowlingnow?'notout':'out'}}">{{match.Teams[getBowlingTeamId(inn.Battingteam)].Players[bowler.Bowler].Name_Full}}</a>
+                                </td>
+                                <td>{{bowler.Overs}}</td>
+                                <td>{{bowler.Runs}}</td>
+                                <td>{{bowler.Maidens}}</td>
+                                <td>{{bowler.Dots}}</td>
+                                <td>{{bowler.Economyrate}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/lodash.min.js"></script>
+    <script>
+        var cric = angular.module("MtchApp", []);
+        cric.controller("MatchController", function ($scope, $http) {
+            //$scope.selectedMatchScore={};
+            console.log("match controller")
+            //console.log(localStorage.match)
+            $scope.match = JSON.parse(localStorage.match);
+            console.log($scope.match)
+
+            $scope.getBowlingTeamId = function (battingId) {
+                let bowlingId = null;
+                Object.keys($scope.match.Teams).forEach((matchId) => {
+                    if (battingId !== matchId) {
+                        console.log("returning bowler id", matchId)
+                        bowlingId = matchId;
+                    }
+                });
+                return bowlingId;
+            };
+            $scope.trimString = function (str) {
+                return str.trim();
+            }
+            $scope.colors = {};
+            $scope.getcolors = function () {
+                try {
+                    console.log("getting colors")
+                    $http.get("res/colors.json").then(function (data) {
+                        $scope.colors = data.data;
+                        return data.data;
+                    })
+                } catch (err) {
+                    console.log(err)
+                }
+
+            }
+            $scope.getcolors();
+            $scope.getProfile = function (bat_id,colors) {
+                let url = "https://cricket.yahoo.net/sifeeds/cricket/static/json/" + bat_id + "_json_profile.json";
+                console.log(url);
+                $http.get(url).then(function (data) {
+                    //console.log()
+                    let profile = {};
+                    data.data.data.forEach(function (el) {
+                        profile[Object.keys(el)[0]] = el[Object.keys(el)[0]];
+                    });
+                    console.log(JSON.stringify(profile))
+                    profile.id=bat_id;
+                    profile.colors = colors;
+                    localStorage.profile = JSON.stringify(profile);
+                    var ref = window.open("profile.html", "_self", 'location=yes');
+                });
+
+            }
+
+
+        });
+
+    </script>
+</body>
+
+</html>
